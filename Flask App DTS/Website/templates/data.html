@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+<!-- Inherit the base html document for consistency -->
+<!-- Set the title of the data page, it overrides the block in the base template -->
+{% block title %}Data{% endblock %}
+
+{% block content %}
+<!-- Custom CSS for responsive design -->
+<style>
+    @media (max-width: 768px) {
+        /* Ensures that cards and tables fit on small screens */
+        .card, .table {
+            width: 100%;
+            margin: 0;
+        }
+        /* Makes the table scrollable horizontally if the screen is too small */
+        .table-responsive {
+            overflow-x: auto;
+        }
+    }
+</style>
+
+<!-- Main content area for the data page -->
+<div class="mt-3 mb-3">
+  <!-- Card displaying a welcome message and the name of the currently logged-in user -->
+  <div class="card text-white bg-primary mb-3">
+    <div class="card-header">Welcome Back!</div>
+    <div class="card-body">
+      <h4 class="card-title">{{ user.first_name }}</h4>
+      <p class="card-text">Here are our users, edit your user information below:</p>
+    </div>
+  </div>
+  
+  <!-- Scrollable table for smaller devices to display user data -->
+  <div class="table-responsive">
+    <table class="table table-dark table-hover">
+      <thead>
+        <tr>
+          <th scope="col">First Name</th>
+          <th scope="col">Email</th>
+          <th scope="col"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Iterate through each user to display their information -->
+        {% for user in users %}
+        <!-- Form to update user info, posting to a specific URL that handles user updates -->
+        <form method="post" action="/update_user/{{ user.id }}">
+        <tr>
+          <td>
+            <!-- Input field pre-filled with user's first name, allowing for edits -->
+            <input type="text" name="name" value="{{ user.first_name }}" class="form-control">
+          </td>
+          <td>
+            <!-- Conditionally display the email field only if the user is the logged-in user -->
+            {% if user.id == current_user.id %}
+              <input type="email" name="email" value="{{ user.email }}" class="form-control">
+            {% else %}
+              <input type="email" name="email" value="Hidden" class="form-control" readonly>
+            {% endif %}
+          </td>
+          <td>
+            <!-- Button to submit the form and update the user information -->
+            <button type="submit" class="btn btn-info">Update</button>
+          </td>
+        </tr>
+        </form>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Iterate through user progress data to display progress bars -->
+{% for user_progress in users_progress %}
+  <!-- Card for each user showing their progress towards daily protein and calorie goals -->
+  <div class="card mb-4" style="background-color: #2c2c2c;">
+    <div class="card-header" style="color: #ffffff;">
+      <!-- Display the user's name in the card header -->
+      {{ user_progress.user.first_name }}'s Progress
+    </div>
+    <div class="card-body" style="color: #ffffff;">
+      <p>Protein Goal Progress:</p>
+      <!-- Bootstrap progress bar indicating the percentage of protein goal achieved -->
+      <div class="progress">
+        <div class="progress-bar" role="progressbar" style="width: {{ user_progress.protein_percentage }}%" aria-valuenow="{{ user_progress.protein_percentage }}" aria-valuemin="0" aria-valuemax="100"></div>
+      </div>
+      <p class="mt-2">Calorie Goal Progress:</p>
+      <!-- Bootstrap progress bar indicating the percentage of calorie goal achieved -->
+      <div class="progress">
+        <div class="progress-bar" role="progressbar" style="width: {{ user_progress.calorie_percentage }}%" aria-valuenow="{{ user_progress.calorie_percentage }}" aria-valuemin="0" aria-valuemax="100"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- A hidden form to delete a user - can be activated if needed in the future -->
+  <!--
+  <form action="{{ url_for('views.delete_user', user_id=user_progress.user.id) }}" method="post">
+    <button type="submit" class="btn btn-danger">Delete User</button>
+  </form>
+
+
+{% endfor %}
+{% endblock %}

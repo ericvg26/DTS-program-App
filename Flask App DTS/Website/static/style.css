@@ -1,0 +1,69 @@
+/* This will style all nav-links within a navbar-red class */
+.navbar-red .nav-link {
+    color: #ffffff !important; /* Replace with the color you want for your text */
+}
+
+/* For hover state */
+.navbar-red .nav-link:hover {
+    color: #8a6d6d !important; /* Replace with the color you want on hover */
+}
+
+.navbar-red {
+    background-color: #771919 !important; /* Change to your desired shade of red */
+}
+
+body {
+    background-color: #000000; /* Set background to black */
+    color: #ffffff; /* Set default text color to white */
+}
+
+/* Ensuring the dashboard iframe takes the full width on mobile */
+@media (max-width: 576px) {
+    .embed-responsive-16by9 {
+        height: 500px; /* Adjust height as needed */
+    }
+}
+
+/* Custom styles for the dashboard header */
+.dashboard-header {
+    color: #ffffff;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+body {
+    background-color: #000000;
+    color: #ffffff;
+}
+
+.navbar-dark .navbar-nav .nav-link {
+    color: #ffffff;
+}
+
+.container {
+    margin-top: 20px;
+}
+
+.display-4 {
+    font-size: 2.5rem;
+    color: #ffffff;
+}
+
+@media (max-width: 768px) {
+    .display-4 {
+        font-size: 1.5rem;
+    }
+
+    .embed-responsive {
+        height: 400px;
+    }
+}
+
+@media (max-width: 576px) {
+    .display-4 {
+        font-size: 1.2rem;
+    }
+
+    .embed-responsive {
+        height: 300px;
+    }
+}

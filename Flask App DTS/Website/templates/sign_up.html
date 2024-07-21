@@ -1,0 +1,73 @@
+{% extends "base.html" %} <!-- Inherit from base template -->
+{% block title %}Sign Up{% endblock %} <!-- Set page title to 'Sign Up' -->
+{% block content %}
+<!-- Content block for the sign-up form -->
+
+<form method="POST">
+<!-- Form submission via POST method to send data securely -->
+
+  <h3 align="center">Sign Up</h3>
+  <!-- Center-aligned heading for sign-up section -->
+
+  <div class="form-group">
+    <!-- Bootstrap class for styling and grouping form elements -->
+    <label for="email">Email Address</label>
+    <!-- Label for email input field -->
+    <input
+      type="email"
+      class="form-control"
+      id="email"
+      name="email"
+      placeholder="Enter email"
+    />
+    <!-- Email input field with HTML5 validation for email format -->
+  </div>
+
+  <div class="form-group">
+    <!-- Form group for the first name input -->
+    <label for="firstName">First Name</label>
+    <!-- Label for the first name input field -->
+    <input
+      type="text"
+      class="form-control"
+      id="firstName"
+      name="firstName"
+      placeholder="Enter first name"
+    />
+    <!-- Text input field for the first name -->
+  </div>
+
+  <div class="form-group">
+    <!-- Form group for the password input -->
+    <label for="password1">Password</label>
+    <!-- Label for the password input field -->
+    <input
+      type="password"
+      class="form-control"
+      id="password1"
+      name="password1"
+      placeholder="Enter password"
+    />
+    <!-- Password input field that hides text entry -->
+  </div>
+
+  <div class="form-group">
+    <!-- Form group for the password confirmation input -->
+    <label for="password2">Password (Confirm)</label>
+    <!-- Label for the password confirmation input field -->
+    <input
+      type="password"
+      class="form-control"
+      id="password2"
+      name="password2"
+      placeholder="Confirm password"
+    />
+    <!-- Password confirmation input field to verify password entry -->
+  </div>
+
+  <br />
+  <button type="submit" class="btn btn-primary">Submit</button>
+  <!-- Submit button for the form -->
+  
+</form>
+{% endblock %}

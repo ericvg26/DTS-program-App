@@ -1,0 +1,45 @@
+{% extends "base.html" %} <!-- Inherits the base layout and functionality from base.html -->
+{% block title %}Login{% endblock %} <!-- Sets the page title to "Login" within the base template -->
+{% block content%}<!-- This block will be inserted into the base.html content area -->
+
+
+<form method="POST">
+  <!-- Start of the form. The method 'POST' indicates that the form data will be sent to the server when the form is submitted. -->
+    <h3 align="center">Login</h3>
+    <div class="form-group">
+      <!-- Bootstrap class 'form-group' for optimum spacing and enhanced form layout -->
+      <label for="email">Email Address</label>
+      <input
+        type="email" 
+        class="form-control"
+        id="email"
+        name="email"
+        placeholder="Enter email"
+      />
+    </div>
+    
+    <div class="form-group">
+      <!-- Another 'form-group' for the password input -->
+      <label for="password">Password</label>
+      <input
+        type="password"
+        class="form-control"
+        id="password"
+        name="password"
+        placeholder="Enter password"
+      />
+      <!-- Bootstrap class 'form-control' for styling -->
+    </div>
+    <br />
+    <button type="submit" class="btn btn-primary">Login</button>
+    <!-- Submit button. When clicked, it submits the form. The Bootstrap classes style the button -->
+  </form>
+  {% endblock %}
+
+
+
+
+
+
+
+

@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+
+<!-- Page title that gets inserted into the title block of the base template -->
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <!-- Greeting message personalized with the user's first name -->
+            <div class="text-center mb-4">
+                <h1 class="display-4" style="color: #ffffff;">Hi {{ user.first_name }}, welcome to your protein tracking site!</h1>
+            </div>
+
+            <!-- Form for adding a new meal entry. Posts back to the same URL, handled by 'views.home' view function -->
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">Add Your Meal</div>
+                <div class="card-body text-dark">
+                    <form action="{{ url_for('views.home') }}" method="post">
+                        {{ meal_form.hidden_tag() }}
+                        <!-- Input fields for the meal form -->
+                        <!-- Form fields are dynamically generated using Flask-WTF and are styled with Bootstrap -->
+                        <div class="form-group">
+                            <!-- MEAL DISCRIPTION-->
+                            {{ meal_form.meal_type.label(class='form-label') }}
+                            {{ meal_form.meal_type(class='form-control') }}
+                        </div>
+                        <div class="form-group">
+                            <!-- PROTIEN-->
+                            {{ meal_form.protein.label(class='form-label') }}
+                            {{ meal_form.protein(class='form-control') }}
+                        </div>
+                        <div class="form-group">
+                            <!-- CALORIES-->
+                            {{ meal_form.calories.label(class='form-label') }}
+                            {{ meal_form.calories(class='form-control') }}
+                        </div>
+                        <!-- Submit button for the form -->
+                        <button type="submit" name="meal_submit" class="btn btn-primary w-100">Add Meal</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Section for displaying today's meals and nutritional info -->
+            <div class="card mb-4">
+                <div class="card-header bg-success text-white">Your Meals For Today</div>
+                <!-- List of meals displayed from the 'meals' variable passed to the template -->
+                <ul class="list-group list-group-flush" style="color: #000000;">
+                    {% for meal in meals %}
+                    <li class="list-group-item">{{ meal.meal_type }}: {{ meal.protein }}g protein, {{ meal.calories }} calories</li>
+                    {% endfor %}
+                </ul>
+                <!-- Footer of the card displays the total protein and calories consumed today -->
+                <div class="card-footer text-dark">
+                    <strong>Total Protein:</strong> {{ total_protein }}g
+                    <strong>Total Calories:</strong> {{ total_calories }} calories
+                </div>
+                <!-- Canvas elements for Chart.js graphs, showing the user's nutritional intake. Code for graphs at the bottom of the page -->
+                <div class="row">
+                    <div class="col-md-6">
+                        <!-- protien pie chart-->
+                        <canvas id="proteinChart" width="400" height="400"></canvas>
+                    </div>
+                    <div class="col-md-6">
+                        <!-- calorie bar graph-->
+                        <canvas id="calorieChart" width="400" height="400"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Button to clear the meals recorded for today, could be better implemented to delete individual meals but this assumes the user makes no mistakes -->
+            <div class="text-center mb-4">
+                <form action="{{ url_for('views.clear_daily_meals') }}" method="post">
+                    <button type="submit" class="btn btn-danger">Clear Today's Meals</button>
+                </form>
+            </div>
+
+            <!-- Goal setting section where users can view and update their protein and calorie goals -->
+            <div class="card mb-4">
+                <div class="card-header bg-info text-white">Your Goals</div>
+                <div class="card-body text-dark">
+                    <!-- Display current goals-->
+                    <p><strong>Protein Goal:</strong> {{ user.daily_protein_goal }} grams</p>
+                    <p><strong>Calorie Goal:</strong> {{ user.daily_calorie_goal }} calories</p>
+                    <!-- Goal update form -->
+                    <form action="{{ url_for('views.home') }}" method="post">
+                        {{ goal_form.hidden_tag() }}
+                        <div class="form-group">
+                            {{ goal_form.daily_protein.label(class='form-label') }}
+                            {{ goal_form.daily_protein(class='form-control') }}
+                        </div>
+                        <div class="form-group">
+                            {{ goal_form.daily_calories.label(class='form-label') }}
+                            {{ goal_form.daily_calories(class='form-control') }}
+                        </div>
+                        <button type="submit" name="goal_submit" class="btn btn-primary w-100">Update Goals</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Importing the Chart.js library from a CDN for creating graphs and charts -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    // Access the canvas element for the protein chart and get its 2d context for drawing
+    const proteinChartContext = document.getElementById('proteinChart').getContext('2d');
+    // Create a new Chart instance for the protein chart
+    new Chart(proteinChartContext, {
+        type: 'pie', // Specify chart type as a pie chart
+        data: { // Data for the chart
+            labels: ['Protein Consumed', 'Protein Remaining'], // Labels for chart sections
+            datasets: [{ // Array of datasets, each object represents a dataset
+                data: [{{ total_protein }}, {{ user.daily_protein_goal - total_protein }}], // Dynamic data inserted using Jinja2 templating
+                backgroundColor: ['#3498db', '#e74c3c'], // Colors for each section of the pie chart
+                borderColor: ['#2980b9', '#c0392b'], // Border colors for each section
+                borderWidth: 2 // Width of the border around each section
+            }]
+        },
+        options: { // Configuration options for the chart's appearance and behavior
+            responsive: true, // Chart will resize in response to changes in the size of its container
+            maintainAspectRatio: false // Aspect ratio will not be maintained, allowing for custom chart sizes
+        }
+    });
+
+    // Repeat the process for the calorie chart, similar to the protein chart
+    const calorieChartContext = document.getElementById('calorieChart').getContext('2d');
+    new Chart(calorieChartContext, {
+        type: 'bar', // Specify chart type as a bar chart
+        data: {
+            labels: ['Calories Consumed', 'Calories Remaining'], // Labels for bar sections
+            datasets: [{
+                label: 'Calories', // Label for the dataset
+                data: [{{ total_calories }}, {{ user.daily_calorie_goal - total_calories }}], // Data for bars, dynamically inserted
+                backgroundColor: ['#f39c12', '#16a085'], // Background colors for bars
+                borderColor: ['#e67e22', '#1abc9c'], // Border colors for bars
+                borderWidth: 1 // Border width
+            }]
+        },
+        options: {
+            scales: { // Configuration options for chart scales
+                y: { // Configuration for the y-axis
+                    beginAtZero: true, // Y-axis will start from zero
+                    max: {{ user.daily_calorie_goal }} // The max value on the y-axis will be the user's daily calorie goal
+                }
+            },
+            responsive: true, // Chart will resize responsively
+            maintainAspectRatio: false // Aspect ratio will not be maintained
+        }
+    });
+</script>
+{% endblock %}
+

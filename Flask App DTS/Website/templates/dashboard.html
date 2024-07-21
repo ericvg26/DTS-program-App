@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-12 text-center mb-4">
+            <h1 class="display-4" style="color: #ffffff;">Hi {{ user.first_name }}, here is your analytics</h1>
+        </div>
+        <div class="col-12">
+            <iframe src="{{ url_for('/dash_app/') }}" class="w-100" style="height: 1300px; border: none;"></iframe>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}Help{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <h1 class="display-4 text-center mb-4">Help Documentation</h1>
+
+            <div id="introduction" class="content-section">
+                <h2>Introduction</h2>
+                <p>Welcome to the Protein Tracking App! This app helps you track your protein and calorie intake, set daily goals, and monitor your progress.</p>
+                <p><strong>Main Features:</strong></p>
+                <ul>
+                    <li>Meal Logging: Easily log your meals with details on protein content and calories.</li>
+                    <li>Goal Setting: Set and update your daily protein and calorie goals.</li>
+                    <li>Progress Tracking: View your progress with detailed charts and graphs.</li>
+                </ul>
+            </div>
+
+            <div id="getting-started" class="content-section">
+                <h2>Getting Started</h2>
+                <h3>Creating an Account</h3>
+                <p>To create an account, follow these steps:</p>
+                <ol>
+                    <li>Navigate to the Sign-Up page from the navigation bar.</li>
+                    <li>Fill out the form with your email, first name, and password.</li>
+                    <li>Click the "Sign Up" button to create your account.</li>
+                </ol>
+                <h3>Logging In</h3>
+                <p>To log in, follow these steps:</p>
+                <ol>
+                    <li>Go to the Login page from the navigation bar.</li>
+                    <li>Enter your email and password.</li>
+                    <li>Click the "Login" button to access your account.</li>
+                </ol>
+                <h3>Navigating the App</h3>
+                <p>Use the navigation bar to access the main sections of the app:</p>
+                <ul>
+                    <li><strong>Home:</strong> Log meals, view daily intake, and set goals.</li>
+                    <li><strong>Dashboard:</strong> View detailed visualizations of your progress.</li>
+                    <li><strong>Data:</strong> Manage user profile information and view overall progress.</li>
+                </ul>
+            </div>
+
+        
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,21 @@
+{
+    "short_name": "Protein Tracker",
+    "name": "Simple Protein Tracking App",
+    "icons": [
+      {
+        "src": "/static/icons/icon-192x192.png",
+        "type": "image/png",
+        "sizes": "192x192"
+      },
+      {
+        "src": "/static/icons/icon-512x512.png",
+        "type": "image/png",
+        "sizes": "512x512"
+      }
+    ],
+    "start_url": "/",
+    "display": "standalone",
+    "orientation": "portrait-primary",
+    "background_color": "#000000",
+    "theme_color": "#000000"
+  }
