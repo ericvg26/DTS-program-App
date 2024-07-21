@@ -7,10 +7,12 @@ from .models import User, Meal
 from flask import current_app as app
 from flask_login import current_user
 
+# Function to retrieve all meal data for a specific user
 def get_user_data(user_id):
     user_meals = Meal.query.filter_by(user_id=user_id).all()
     return user_meals
 
+# Function to calculate if the user met their daily protein and calorie goals
 def calculate_goal_achievement(user, date):
     meals_today = Meal.query.filter_by(user_id=user.id, date=date).all()
     total_protein = sum(meal.protein for meal in meals_today)
@@ -21,6 +23,7 @@ def calculate_goal_achievement(user, date):
     
     return protein_goal_met, calorie_goal_met
 
+# Function to get goal achievement data for a specific user
 def get_goal_achievement_data(user_id):
     user_meals = get_user_data(user_id)
     
@@ -48,6 +51,7 @@ def get_goal_achievement_data(user_id):
     df = pd.DataFrame(data)
     return df
 
+# Function to get nutrition data (protein and calorie intake) for a specific user
 def get_nutrition_data(user_id):
     user_meals = get_user_data(user_id)
     
@@ -72,6 +76,7 @@ def get_nutrition_data(user_id):
     df = pd.DataFrame(data)
     return df
 
+# Function to get meal type data for a specific user
 def get_meal_type_data(user_id):
     user_meals = get_user_data(user_id)
     
@@ -82,6 +87,7 @@ def get_meal_type_data(user_id):
     
     return meal_type_counts
 
+# Function to create and configure the Dash app within the Flask app
 def create_dash_app(flask_app):
     dash_app = dash.Dash(
         __name__,
@@ -90,6 +96,7 @@ def create_dash_app(flask_app):
         external_stylesheets=['https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css']
     )
     
+    # Define the layout of the Dash app
     dash_app.layout = html.Div([
         dcc.Dropdown(id='user-dropdown'),
         dcc.Graph(id='goal-achievement-bar-graph'),
@@ -97,6 +104,7 @@ def create_dash_app(flask_app):
         dcc.Graph(id='meal-type-pie-chart')
     ])
     
+    # Callback to update the user dropdown options based on the authenticated user
     @dash_app.callback(
         [Output('user-dropdown', 'options'),
          Output('user-dropdown', 'value')],
@@ -109,6 +117,7 @@ def create_dash_app(flask_app):
         else:
             return [], None
     
+    # Callback to update the graphs based on the selected user
     @dash_app.callback(
         [Output('goal-achievement-bar-graph', 'figure'),
          Output('nutrition-dot-plot', 'figure'),
@@ -118,20 +127,40 @@ def create_dash_app(flask_app):
     def update_graphs(user_id):
         if not user_id:
             return {}, {}, {}
-        
+    
         goal_df = get_goal_achievement_data(user_id)
         nutrition_df = get_nutrition_data(user_id)
         meal_type_df = get_meal_type_data(user_id)
-        
-        # Goal Achievement Line Plot
-        goal_fig = px.scatter(goal_df, x='date', y='goal', color='met', symbol='goal', 
-                              title='Goal Achievement', labels={'met': 'Goal Met'}, 
-                              category_orders={'goal': ['Protein', 'Calories']})
+    
+        # Convert 0 and 1 to "No" and "Yes" for better readability
+        goal_df['met'] = goal_df['met'].replace({0: 'No', 1: 'Yes'})
+    
+        # Goal Achievement Scatter Plot with custom colors
+        goal_fig = px.scatter(
+            goal_df, x='date', y='goal', color='met', symbol='goal', 
+            title='Goal Achievement', labels={'met': 'Goal Met'}, 
+            category_orders={'goal': ['Protein', 'Calories']},
+            color_discrete_map={'No': 'red', 'Yes': 'green'}
+        )
         goal_fig.update_traces(marker=dict(size=12, opacity=0.7), selector=dict(mode='markers+lines'))
-        goal_fig.update_layout(yaxis=dict(tickmode='array', tickvals=['Protein', 'Calories']))
-        
+        goal_fig.update_layout(
+            yaxis=dict(tickmode='array', tickvals=['Protein', 'Calories']),
+            legend_title_text='Goal Met',
+            legend=dict(
+                x=1, y=1,
+                title_font_family="Arial",
+                font=dict(size=12),
+                bgcolor="LightSteelBlue",
+                bordercolor="Black",
+                borderwidth=2
+            )
+        )
+    
         # Nutrition Dot Plot
-        nutrition_fig = px.scatter(nutrition_df, x='date', y=['protein', 'calories'], title='Protein and Calorie Intake', labels={'value': 'Intake'})
+        nutrition_fig = px.scatter(
+            nutrition_df, x='date', y=['protein', 'calories'], 
+            title='Protein and Calorie Intake', labels={'value': 'Intake'}
+        )
         
         # Meal Type Pie Chart
         meal_type_fig = px.pie(meal_type_df, names='meal_type', values='count', title='Most Eaten Meal Types')
