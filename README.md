@@ -20,11 +20,19 @@ Tools & Libraries: Flask-Login, Flask-WTF, python-docx, Dash, Plotly, WTForms
 
 Project Structure
 ├── main.py               # App entry point
+
 ├── __init__.py           # Flask app initialization & DB setup
+
 ├── models.py             # Database models (User, Meal)
+
 ├── views.py              # Main routes (dashboard, logging)
+
 ├── auth.py               # Authentication routes (login, signup)
+
 ├── forms.py              # WTForms for meal and goal input
+
 ├── dash_app.py           # Interactive data visualization dashboard
+
 ├── docx_handling.py      # Generates Word reports from user data
+
 └── templates/            # HTML templates (Jinja2)
